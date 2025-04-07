@@ -28,19 +28,54 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 */
 public with sharing class AccountHelper {
     
-    public void setTypeProspect(SObject objects){
-
+    public static void setTypeProspect(List<SObject> objects){
+        for(Account acc: (List<Account>)objects){
+            if(String.isBlank(acc.Type)){
+                acc.Type = 'Prospect';
+            }
+        }
     }
 
-    void addressCopy(){
-
+    public static void addressCopy(List<Account> accList){
+        for(Account acc: accList){
+            if(acc.shippingCity!=null){
+                acc.BillingCity = acc.shippingCity;
+            }
+            if(acc.shippingCountry!=null){
+                acc.BillingCountry = acc.shippingCountry;
+            }
+            if(acc.shippingState!=null){
+                acc.BillingState = acc.shippingState;
+            }
+            if(acc.shippingStreet!=null){
+                acc.BillingStreet = acc.shippingStreet;
+            }
+            if(acc.shippingPostalCode!=null){
+                acc.BillingPostalCode = acc.shippingPostalCode;
+            }
+        }
     }
 
-    //[public | private ] [static] data_type setRating (input parameters) {
-    //  The body of the method
-    //}
+    public static void setRating (List<Account> newAccounts) {
+        //  The body of the method
+        for(Account acc : newAccounts){
+            if(acc.phone != null && acc.Website != null && acc.Fax != null){
+                acc.Rating = 'Hot';
+            }
+        }
+    }
 
-    //[public | private ] [static] data_type defaultContact (input parameters) {
-    //  The body of the method
-    //}
+    public static void defaultContact (List<Account> accList) {
+        //  The body of the method
+        List<Contact> contactToBeInserted = new List<Contact>();
+        for(Account acc : accList){
+            Contact con = new Contact(
+                LastName = 'DefaultContact',
+                Email = 'default@email.com',
+                AccountId = acc.Id);
+            contactToBeInserted.add(con);
+        }
+
+        Database.insert(contactToBeInserted);
+    }
 }
