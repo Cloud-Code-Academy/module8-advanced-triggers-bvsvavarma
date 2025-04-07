@@ -28,8 +28,8 @@ Always ensure that your helper methods are bulk-safe to handle multiple records 
 */
 public with sharing class AccountHelper {
     
-    public static void setTypeProspect(List<Account> newAccounts){
-        for(Account acc: newAccounts){
+    public static void setTypeProspect(List<SObject> objects){
+        for(Account acc: (List<Account>)objects){
             if(String.isBlank(acc.Type)){
                 acc.Type = 'Prospect';
             }
